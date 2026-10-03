@@ -1,0 +1,77 @@
+name: backstage
+
+x-node: &node
+  image: backstage-node-dev:0.1.0
+  build:
+    context: .
+    dockerfile: infra/compose/Dockerfile.node
+  user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
+  working_dir: /workspace
+  volumes:
+    - .:/workspace
+  environment:
+    HOME: /tmp
+    NEXT_TELEMETRY_DISABLED: '1'
+  mem_limit: 1536m
+
+services:
+  tooling:
+    <<: *node
+    command: ['pnpm', '--version']
+    profiles: ['tools']
+
+  api:
+    <<: *node
+    command: ['pnpm', '--filter', '@backstage/api', 'dev']
+    environment:
+      HOME: /tmp
+      PORT: '3001'
+    ports:
+      - '127.0.0.1:3001:3001'
+    mem_limit: 512m
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3001/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  web:
+    <<: *node
+    command:
+      ['pnpm', '--filter', '@backstage/web', 'dev', '--hostname', '0.0.0.0']
+    ports:
+      - '127.0.0.1:3000:3000'
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 40s
+
+  webhooks:
+    image: backstage-webhooks-dev:0.1.0
+    build:
+      context: ./apps/webhooks
+      dockerfile: Dockerfile
+    ports:
+      - '127.0.0.1:3002:3002'
+    mem_limit: 256m
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:3002/health', timeout=3)"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s

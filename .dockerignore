@@ -1,0 +1,16 @@
+.git
+node_modules
+**/node_modules
+**/.next
+**/dist
+**/coverage
+.turbo
+.cache
+.env
+.env.*
+
+**/.env*
+**/__pycache__
+**/.pytest_cache
+**/.venv
+**/requirements.lock.tmp

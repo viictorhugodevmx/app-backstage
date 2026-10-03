@@ -1,0 +1,8 @@
+FROM node:22.19.0-bookworm-slim
+
+RUN npm install --global pnpm@12.8.1
+
+ENV HOME=/tmp
+ENV NEXT_TELEMETRY_DISABLED=1
+
+WORKDIR /workspace

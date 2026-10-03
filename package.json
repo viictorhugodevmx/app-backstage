@@ -1,0 +1,24 @@
+{
+  "name": "backstage",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": "22.19.0"
+  },
+  "devDependencies": {
+    "turbo": "2.11.7",
+    "prettier": "3.6.2"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "turbo run lint --concurrency=1",
+    "typecheck": "turbo run typecheck --concurrency=1",
+    "test": "turbo run test --concurrency=1",
+    "test:integration": "turbo run test:integration --concurrency=1",
+    "build": "turbo run build --concurrency=1",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:integration",
+    "check:all": "bash scripts/check-all.sh"
+  }
+}
