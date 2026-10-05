@@ -58,3 +58,12 @@ El contenedor Jenkins anterior del equipo se conserva.
 Primer commit después de verificar la preparación.
 Después, commits por paso o funcionalidad con prefijos como
 chore, feat, fix, test y docs.
+
+## Acuerdo de ejecución de Backstage
+
+- El asistente valida las evidencias y comunica los pendientes.
+- El usuario da el visto bueno para cerrar oficialmente cada paso.
+- Al iniciar un paso se presenta el mapa completo de subpasos.
+- Las instrucciones se entregan en bloques de tres subpasos.
+- Las notas no bloqueantes se registran sin detener el avance.
+- Se guardan commits por avances coherentes o funcionalidades.

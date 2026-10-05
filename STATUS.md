@@ -28,3 +28,13 @@
 - Configuración de entorno y documentación inicial preparadas.
 - Primer commit creado y subido a GitHub.
 - Siguiente paso: PostgreSQL, migraciones y datos iniciales.
+
+## Paso 1 — En progreso
+
+- Mapa de subpasos y acuerdos de ejecución documentados.
+- PostgreSQL 17.11 agregado a Docker Compose.
+- Credencial administrativa local almacenada fuera de Git.
+- Conexión SQL y persistencia tras recrear el contenedor comprobadas.
+- Pendiente: bases y usuarios de desarrollo/pruebas, cliente API,
+  migraciones, seed y verificaciones.
+- El paso todavía no está cerrado.

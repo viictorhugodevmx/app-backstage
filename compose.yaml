@@ -1,3 +1,6 @@
+include:
+  - ./compose.database.yaml
+
 name: backstage
 
 x-node: &node

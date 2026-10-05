@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17.11
+    environment:
+      POSTGRES_USER: backstage_admin
+      POSTGRES_PASSWORD: '${DB_ADMIN_PASSWORD:?Falta DB_ADMIN_PASSWORD en .env}'
+      POSTGRES_DB: postgres
+    ports:
+      - '127.0.0.1:5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    mem_limit: 512m
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U backstage_admin -d postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+volumes:
+  postgres_data:
