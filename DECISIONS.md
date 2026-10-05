@@ -67,3 +67,18 @@ chore, feat, fix, test y docs.
 - Las instrucciones se entregan en bloques de tres subpasos.
 - Las notas no bloqueantes se registran sin detener el avance.
 - Se guardan commits por avances coherentes o funcionalidades.
+
+## PostgreSQL y migraciones
+
+- PostgreSQL 17.11 en un volumen Docker persistente.
+- Configuración modular mediante compose.database.yaml.
+- Bases y usuarios separados para desarrollo y pruebas.
+- Usuarios de aplicación sin privilegios de superusuario.
+- Cada usuario posee su base para ejecutar migraciones durante el lab.
+- Cliente pg y SQL explícito para estudiar conexiones y restricciones.
+- Migraciones con checksum, historial, transacciones y advisory lock.
+- Seed repetible que conserva eventos existentes.
+- Tests de eventos dentro de transacciones revertidas.
+- Suite de base independiente de las pruebas HTTP.
+- Pool de la API limitado a cinco conexiones y cerrado al apagar Nest.
+- /health/ready comprueba conectividad; no verifica reglas de negocio.

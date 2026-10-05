@@ -31,3 +31,17 @@ migraciones y datos iniciales comprobados con pruebas.
 - Las verificaciones generales pasan.
 - Los cambios quedan documentados y subidos a GitHub.
 - El usuario da el visto bueno para cerrar el paso.
+
+## Implementación y comprobaciones
+
+- PostgreSQL conserva datos tras recrear su contenedor.
+- Desarrollo y pruebas tienen bases y usuarios separados.
+- Migración 001_create_events.sql aplicada.
+- Repetir migraciones no vuelve a ejecutarlas.
+- Tres eventos ficticios cargados sin duplicados.
+- Nueve tests de base comprueban historial, restricciones, seed y aislamiento.
+- Disponibilidad HTTP comprobada con PostgreSQL real.
+- Respuestas HTTP 200 y 503 cubiertas por pruebas.
+- Auditoría general ejecutada correctamente.
+
+El cierre oficial queda pendiente del visto bueno del usuario.

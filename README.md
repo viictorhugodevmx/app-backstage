@@ -82,3 +82,67 @@ Nest todavía no carga automáticamente archivos .env.
 - STATUS.md: avances y pendientes.
 
 Las imágenes actuales son de desarrollo y pruebas.
+
+## PostgreSQL local
+
+PostgreSQL 17.11 utiliza un volumen persistente administrado por Compose.
+
+| Uso        | Base           | Usuario        |
+| ---------- | -------------- | -------------- |
+| Desarrollo | backstage      | backstage_app  |
+| Pruebas    | backstage_test | backstage_test |
+
+Desde Ubuntu: localhost:5433.
+Desde los contenedores: db:5432.
+
+Las contraseñas locales se conservan en .env, fuera de Git.
+
+### Comandos de base
+
+Desde la raíz del repositorio, después de instalar dependencias:
+
+```bash
+export LOCAL_UID="$(id -u)"
+export LOCAL_GID="$(id -g)"
+
+docker compose --env-file .env up -d --wait db
+
+docker compose --env-file .env exec -T db \
+  psql -U backstage_admin -d postgres \
+  -v ON_ERROR_STOP=1 < infra/db/provision.sql
+
+docker compose --env-file .env run --rm -T tooling \
+  pnpm --filter @backstage/api build
+
+docker compose --env-file .env run --rm -T db-tools \
+  pnpm --filter @backstage/api db:migrate
+
+docker compose --env-file .env run --rm -T db-tools \
+  pnpm --filter @backstage/api db:migrate:test
+
+docker compose --env-file .env run --rm -T db-tools \
+  pnpm --filter @backstage/api db:seed
+
+docker compose --env-file .env run --rm -T db-tools \
+  pnpm --filter @backstage/api test:database
+```
+
+Antes de provisionar en una instalación nueva, preparar en .env las
+variables DB_ADMIN_PASSWORD, DB_APP_PASSWORD y DB_TEST_PASSWORD.
+
+El seed conserva los eventos existentes y no duplica sus slugs.
+Las migraciones aplicadas no deben modificarse ni eliminarse.
+
+### Salud y disponibilidad
+
+- /health: comprueba que la API responde.
+- /health/ready: consulta PostgreSQL y devuelve 503 si falla.
+
+El script de auditoría inicia y detiene la API para comprobar disponibilidad.
+PostgreSQL queda funcionando después de la auditoría.
+
+Para detener la base sin borrar sus datos:
+
+```bash
+docker compose stop db
+```

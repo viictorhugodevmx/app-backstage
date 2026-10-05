@@ -29,6 +29,12 @@ services:
     environment:
       HOME: /tmp
       PORT: '3001'
+      PGHOST: db
+      PGPORT: '5432'
+      DB_APP_PASSWORD: '${DB_APP_PASSWORD:?Falta DB_APP_PASSWORD}'
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - '127.0.0.1:3001:3001'
     mem_limit: 512m

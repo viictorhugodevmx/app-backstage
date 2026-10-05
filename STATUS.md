@@ -58,3 +58,13 @@
 - Seed de tres eventos ficticios ejecutado sin duplicados.
 - Nueve tests de base aprobados.
 - Pendiente: disponibilidad desde la API, verificación general y cierre.
+
+## Paso 1 — Verificación técnica completada
+
+- PostgreSQL, usuarios y bases preparados.
+- Migraciones y seed comprobados.
+- Diecinueve tests del proyecto aprobados.
+- Formato, lint, tipos y builds correctos.
+- Disponibilidad de PostgreSQL desde la API comprobada.
+- Documentación actualizada.
+- Pendiente: visto bueno del usuario para cerrar oficialmente el Paso 1.
