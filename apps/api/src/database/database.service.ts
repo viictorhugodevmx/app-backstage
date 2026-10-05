@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import type { OnModuleDestroy } from '@nestjs/common';
 import pg from 'pg';
-import type { Pool } from 'pg';
+import type { Pool, QueryResultRow } from 'pg';
 import { getDatabaseConfig } from './client.js';
 
 @Injectable()
@@ -29,6 +29,10 @@ export class DatabaseService implements OnModuleDestroy {
     }
 
     return this.pool;
+  }
+
+  query<T extends QueryResultRow>(text: string, values: unknown[] = []) {
+    return this.getPool().query<T>(text, values);
   }
 
   async checkConnection(): Promise<void> {

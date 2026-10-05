@@ -68,3 +68,23 @@
 - Disponibilidad de PostgreSQL desde la API comprobada.
 - Documentación actualizada.
 - Pendiente: visto bueno del usuario para cerrar oficialmente el Paso 1.
+
+## Visto bueno del Paso 1
+
+El usuario confirmó: APP Backstage — PASO 1 — LISTO ✅.
+
+## Paso 2 — En progreso
+
+Objetivo: API de eventos con validación, persistencia y pruebas.
+Contrato y mapa de puntos registrados en docs/steps/paso-02.md.
+
+## Paso 2 — Verificación técnica completada
+
+- API de eventos implementada con validación y persistencia.
+- Listado paginado y filtro por estado.
+- Creación, edición parcial y cancelación repetible.
+- Errores HTTP 400, 404 y 409 comprobados.
+- Smoke HTTP completado.
+- Cuarenta y tres tests del proyecto aprobados.
+- Formato, lint, tipos y builds correctos.
+- Pendiente: visto bueno del usuario para cerrar oficialmente el Paso 2.

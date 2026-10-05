@@ -82,3 +82,21 @@ chore, feat, fix, test y docs.
 - Suite de base independiente de las pruebas HTTP.
 - Pool de la API limitado a cinco conexiones y cerrado al apagar Nest.
 - /health/ready comprueba conectividad; no verifica reglas de negocio.
+
+## API de eventos
+
+- Controlador HTTP, servicio de reglas y repositorio SQL separados.
+- DTOs y ValidationPipe compartido entre aplicación y pruebas.
+- Se rechazan campos desconocidos.
+- Fechas con zona horaria y comparación de inicio/final en el servicio.
+- Edición parcial que conserva los campos omitidos.
+- Los valores null no omiten la validación de edición.
+- Estado inicial draft establecido por PostgreSQL.
+- El estado no se modifica mediante los DTOs de creación o edición.
+- Cancelación repetible y restricción para eventos completados.
+- SQL parametrizado y errores de persistencia traducidos a HTTP.
+- Paginación con orden por starts_at e id.
+- Total y filas se consultan por separado; no constituyen una instantánea
+  transaccional si otros procesos modifican eventos simultáneamente.
+- Las pruebas HTTP de persistencia usan PostgreSQL real en backstage_test
+  y revierten sus cambios al terminar.
