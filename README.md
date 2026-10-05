@@ -215,3 +215,72 @@ El script crea un evento ficticio, lo edita y lo deja cancelado.
 Cada ejecución crea su propio evento de evidencia.
 
 La autenticación y autorización se incorporan en el Paso 3.
+
+## API de eventos
+
+| Método | Ruta               | Operación             |
+| ------ | ------------------ | --------------------- |
+| GET    | /events            | Listado paginado      |
+| GET    | /events/:id        | Detalle por UUID      |
+| POST   | /events            | Crear en estado draft |
+| PATCH  | /events/:id        | Editar campos         |
+| POST   | /events/:id/cancel | Cancelar              |
+
+### Listado
+
+Parámetros opcionales:
+
+- page: 1–10000; predeterminado 1.
+- limit: 1–100; predeterminado 20.
+- status: draft, planning, ready, live, completed o cancelled.
+
+Respuesta: items, total, page y limit.
+
+### Crear un evento
+
+```json
+{
+  "slug": "evento-de-ejemplo",
+  "title": "Evento de ejemplo",
+  "description": "Producción ficticia.",
+  "venue": "Foro de ejemplo",
+  "city": "Tuxtla",
+  "startsAt": "2026-12-01T18:00:00-06:00",
+  "endsAt": "2026-12-01T22:00:00-06:00",
+  "capacity": 100
+}
+```
+
+Las fechas requieren zona horaria.
+La fecha final debe ser posterior a la inicial.
+El estado inicial se establece en el servidor.
+
+### Editar y cancelar
+
+PATCH acepta únicamente los campos que se desean cambiar.
+Los campos omitidos se conservan.
+Se rechazan ediciones vacías, valores null y campos desconocidos.
+
+La cancelación repetida devuelve el evento ya cancelado.
+Un evento completed no puede cancelarse.
+
+### Respuestas
+
+- 200: lectura, edición o cancelación correctas.
+- 201: evento creado.
+- 400: entrada inválida.
+- 404: evento inexistente.
+- 409: slug duplicado o conflicto de cancelación.
+
+### Comprobación HTTP
+
+Con la API funcionando:
+
+```bash
+node scripts/smoke-events.mjs
+```
+
+El script crea un evento ficticio, lo edita y lo deja cancelado.
+Cada ejecución crea su propio evento de evidencia.
+
+La autenticación y autorización se incorporan en el Paso 3.

@@ -55,3 +55,14 @@ en sus pasos funcionales correspondientes.
 - Documentación preparada y cambios listos para Git.
 
 El cierre oficial queda pendiente del visto bueno del usuario.
+
+## Verificación técnica
+
+- DTOs y seis pruebas de validación agregados.
+- Listado, detalle, creación, edición y cancelación implementados.
+- Dieciocho pruebas HTTP con PostgreSQL real aprobadas.
+- Comprobación HTTP desde Ubuntu ejecutada correctamente.
+- Auditoría general con cuarenta y tres tests aprobados.
+- Documentación preparada y cambios listos para Git.
+
+El cierre oficial queda pendiente del visto bueno del usuario.
