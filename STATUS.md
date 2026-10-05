@@ -48,3 +48,13 @@
 - Pendiente: bases y usuarios de desarrollo/pruebas, cliente API,
   migraciones, seed y verificaciones.
 - El paso todavía no está cerrado.
+
+## Paso 1 — Bases, migraciones y seed
+
+- Bases y usuarios de desarrollo/pruebas preparados.
+- Conexiones Node a ambas bases comprobadas.
+- Ejecutor de migraciones con historial, checksum y bloqueo.
+- Migración de eventos aplicada y repetición sin cambios comprobada.
+- Seed de tres eventos ficticios ejecutado sin duplicados.
+- Nueve tests de base aprobados.
+- Pendiente: disponibilidad desde la API, verificación general y cierre.

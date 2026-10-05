@@ -3,8 +3,10 @@ services:
     image: postgres:17.11
     environment:
       POSTGRES_USER: backstage_admin
-      POSTGRES_PASSWORD: '${DB_ADMIN_PASSWORD:?Falta DB_ADMIN_PASSWORD en .env}'
+      POSTGRES_PASSWORD: '${DB_ADMIN_PASSWORD:?Falta DB_ADMIN_PASSWORD}'
       POSTGRES_DB: postgres
+      DB_APP_PASSWORD: '${DB_APP_PASSWORD:?Falta DB_APP_PASSWORD}'
+      DB_TEST_PASSWORD: '${DB_TEST_PASSWORD:?Falta DB_TEST_PASSWORD}'
     ports:
       - '127.0.0.1:5433:5432'
     volumes:
@@ -16,6 +18,28 @@ services:
       timeout: 5s
       retries: 12
       start_period: 15s
+
+  db-tools:
+    image: backstage-node-dev:0.1.0
+    build:
+      context: .
+      dockerfile: infra/compose/Dockerfile.node
+    user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      HOME: /tmp
+      PGHOST: db
+      PGPORT: '5432'
+      DB_APP_PASSWORD: '${DB_APP_PASSWORD:?Falta DB_APP_PASSWORD}'
+      DB_TEST_PASSWORD: '${DB_TEST_PASSWORD:?Falta DB_TEST_PASSWORD}'
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ['tools']
+    mem_limit: 1536m
+    command: ['pnpm', '--version']
 
 volumes:
   postgres_data:
