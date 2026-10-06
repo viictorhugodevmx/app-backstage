@@ -118,3 +118,24 @@ chore, feat, fix, test y docs.
   transaccional si otros procesos modifican eventos simultáneamente.
 - Las pruebas HTTP de persistencia usan PostgreSQL real en backstage_test
   y revierten sus cambios al terminar.
+
+## Auth0, sesión y autorización
+
+- Usamos una Regular Web Application para Next.js.
+- La sesión se administra mediante cookies HttpOnly del SDK.
+- Las consultas a NestJS se realizan desde el servidor de Next.js.
+- Las consultas autenticadas usan cache: no-store.
+- NestJS verifica access tokens con jose y claves públicas JWKS de Auth0.
+- Aceptamos únicamente RS256 y exigimos sujeto, expiración e issued-at.
+- Verificamos emisor y audiencia de la API.
+- Los permisos se comprueban en el backend para cada operación.
+- No usamos el nombre del rol como sustituto del permiso.
+- Un token sin permisos no obtiene permisos implícitos.
+- Los tests funcionales de PostgreSQL aíslan el guard.
+- Los tests de seguridad ejecutan el guard real y verifican firmas reales
+  con claves locales de prueba.
+- El smoke usa tokens reales de administrador y lector.
+- La obtención de access tokens desde el navegador se habilita solamente
+  de forma temporal en desarrollo para el smoke.
+- El diseño visual de las pantallas actuales es provisional; se trabaja
+  en el paso 4.

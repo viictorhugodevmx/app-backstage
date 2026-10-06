@@ -1,3 +1,4 @@
+import { AccessTokenGuard } from '../src/auth/access-token.guard.js';
 import { randomUUID } from 'node:crypto';
 import { Test } from '@nestjs/testing';
 import {
@@ -83,6 +84,8 @@ describe('API de eventos con PostgreSQL', () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
     })
+      .overrideGuard(AccessTokenGuard)
+      .useValue({ canActivate: () => true })
       .overrideProvider(DatabaseService)
       .useValue(testDatabase)
       .compile();

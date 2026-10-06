@@ -99,3 +99,25 @@ Contrato y mapa de puntos registrados en docs/steps/paso-02.md.
 - Cuarenta y tres tests del proyecto aprobados.
 - Formato, lint, tipos y builds correctos.
 - Pendiente: visto bueno del usuario para cerrar oficialmente el Paso 2.
+
+## Paso 2 — VOBO recibido
+
+- API de eventos validada con smoke HTTP y reporte general.
+- 43 pruebas aprobadas en la verificación final.
+- Paso 2 cerrado por el usuario.
+
+## Paso 3 — Autenticación y autorización
+
+- Inicio de configuración de Auth0.
+- Alcance: sesión en Next.js y validación de JWT/permisos en NestJS.
+- Plan detallado en docs/steps/paso-03.md.
+
+## Paso 3 — Cierre técnico
+
+- Auth0 integrado con sesión en Next.js.
+- Access tokens RS256 y permisos verificados en NestJS.
+- Login, logout y consultas comprobados con administrador y lector.
+- 75 pruebas automáticas aprobadas.
+- Smoke real de Auth0 y permisos aprobado.
+- Endpoint de tokens del navegador deshabilitado.
+- Pendiente: revisión del reporte y VOBO del usuario.

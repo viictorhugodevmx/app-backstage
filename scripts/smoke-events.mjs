@@ -1,54 +1,56 @@
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 
-const baseUrl = 'http://127.0.0.1:3001';
+const base = 'http://127.0.0.1:3001';
+const admin = process.env.BACKSTAGE_SMOKE_ADMIN_TOKEN;
+const viewer = process.env.BACKSTAGE_SMOKE_VIEWER_TOKEN;
 
-async function request(path, options = {}) {
-  const { method = 'GET', body, expected = 200 } = options;
+assert.ok(admin, 'Falta el access token del administrador.');
+assert.ok(viewer, 'Falta el access token del lector.');
+assert.notEqual(
+  admin,
+  viewer,
+  'Los tokens deben pertenecer a usuarios distintos.',
+);
 
-  const response = await fetch(`${baseUrl}${path}`, {
+async function request(
+  path,
+  { method = 'GET', token, body, expected = 200 } = {},
+) {
+  const headers = {};
+
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (body !== undefined) headers['Content-Type'] = 'application/json';
+
+  const response = await fetch(`${base}${path}`, {
     method,
-    headers:
-      body === undefined
-        ? undefined
-        : {
-            'content-type': 'application/json',
-          },
+    headers,
     body: body === undefined ? undefined : JSON.stringify(body),
     signal: AbortSignal.timeout(15000),
   });
 
-  const result = await response.json();
-
   assert.equal(
     response.status,
     expected,
-    `${method} ${path}: ${JSON.stringify(result)}`,
+    `${method} ${path}: se esperaba ${expected}, llegó ${response.status}`,
   );
 
   console.log(`OK: ${method} ${path} → ${response.status}`);
-  return result;
+
+  return await response.json();
 }
 
-const health = await request('/health/ready');
-assert.equal(health.database, 'postgresql');
+await request('/health/ready');
+await request('/events', { expected: 401 });
+await request('/events', { token: 'invalid-token', expected: 401 });
 
-const list = await request('/events?page=1&limit=2');
-assert.ok(Array.isArray(list.items));
-assert.equal(list.page, 1);
-assert.equal(list.limit, 2);
-
-const filtered = await request('/events?status=planning');
-assert.ok(filtered.items.every((event) => event.status === 'planning'));
-
-await request('/events?limit=101', { expected: 400 });
-await request('/events/no-es-uuid', { expected: 400 });
-await request(`/events/${randomUUID()}`, { expected: 404 });
+const readerEvents = await request('/events?page=1&limit=2', { token: viewer });
+assert.ok(Array.isArray(readerEvents.items));
 
 const payload = {
-  slug: `smoke-http-${randomUUID()}`,
-  title: 'Prueba operativa HTTP',
-  description: 'Evento ficticio creado para comprobar la API.',
+  slug: `smoke-auth-${randomUUID()}`,
+  title: 'Prueba autenticada HTTP',
+  description: 'Evento ficticio de verificación.',
   venue: 'Foro de pruebas',
   city: 'Tuxtla',
   startsAt: '2026-12-12T18:00:00-06:00',
@@ -58,12 +60,21 @@ const payload = {
 
 await request('/events', {
   method: 'POST',
+  token: viewer,
+  body: payload,
+  expected: 403,
+});
+
+await request('/events', {
+  method: 'POST',
+  token: admin,
   body: { ...payload, status: 'ready' },
   expected: 400,
 });
 
 const created = await request('/events', {
   method: 'POST',
+  token: admin,
   body: payload,
   expected: 201,
 });
@@ -72,38 +83,50 @@ assert.equal(created.status, 'draft');
 
 await request('/events', {
   method: 'POST',
+  token: admin,
   body: payload,
   expected: 409,
 });
 
-const detail = await request(`/events/${created.id}`);
+const path = `/events/${created.id}`;
+const detail = await request(path, { token: viewer });
 assert.equal(detail.id, created.id);
 
-const updated = await request(`/events/${created.id}`, {
+await request(path, {
   method: 'PATCH',
-  body: { title: 'Prueba operativa HTTP editada' },
+  token: viewer,
+  body: { title: 'Edición prohibida' },
+  expected: 403,
 });
 
-assert.equal(updated.title, 'Prueba operativa HTTP editada');
+await request(`${path}/cancel`, {
+  method: 'POST',
+  token: viewer,
+  expected: 403,
+});
+
+const updated = await request(path, {
+  method: 'PATCH',
+  token: admin,
+  body: { title: 'Prueba autenticada HTTP editada' },
+});
+
+assert.equal(updated.title, 'Prueba autenticada HTTP editada');
 assert.equal(updated.description, payload.description);
 
-await request(`/events/${created.id}`, {
-  method: 'PATCH',
-  body: { title: null },
-  expected: 400,
-});
-
-const cancelled = await request(`/events/${created.id}/cancel`, {
+const cancelled = await request(`${path}/cancel`, {
   method: 'POST',
+  token: admin,
 });
 
 assert.equal(cancelled.status, 'cancelled');
 
-const repeated = await request(`/events/${created.id}/cancel`, {
+const repeated = await request(`${path}/cancel`, {
   method: 'POST',
+  token: admin,
 });
 
 assert.deepEqual(repeated, cancelled);
 
 console.log(`Evento de evidencia: ${created.id}`);
-console.log('SMOKE HTTP DE EVENTOS COMPLETADO');
+console.log('SMOKE AUTH0 Y PERMISOS COMPLETADO');

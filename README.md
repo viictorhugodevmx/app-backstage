@@ -284,3 +284,55 @@ El script crea un evento ficticio, lo edita y lo deja cancelado.
 Cada ejecución crea su propio evento de evidencia.
 
 La autenticación y autorización se incorporan en el Paso 3.
+
+## Autenticación y autorización
+
+Backstage utiliza Auth0 con una aplicación Regular Web Application.
+
+- /account permite iniciar y cerrar sesión.
+- /events consulta eventos desde el servidor de Next.js.
+- Next.js envía un access token a NestJS.
+- NestJS verifica RS256, emisor, audiencia, expiración y permisos.
+- Los endpoints de salud permanecen públicos.
+- Los endpoints de eventos requieren autenticación.
+- HTTP 401 indica token ausente, inválido o vencido.
+- HTTP 403 indica permisos insuficientes.
+
+### Roles
+
+| Rol                | Permisos                                                 |
+| ------------------ | -------------------------------------------------------- |
+| backstage-viewer   | read:events                                              |
+| backstage-producer | read:events, create:events, update:events                |
+| backstage-admin    | read:events, create:events, update:events, cancel:events |
+
+La aplicación debe tener User-Delegated Access autorizado para la API.
+La API debe tener RBAC habilitado y agregar permisos al access token.
+
+### Variables locales
+
+Next.js carga apps/web/.env.local.
+El ejemplo se encuentra en apps/web/.env.example.
+
+NestJS recibe AUTH0_DOMAIN y AUTH0_AUDIENCE desde Docker Compose.
+La audiencia configurada es https://backstage.local/api.
+
+Los Client Secrets, secretos de sesión y tokens no se versionan.
+
+### Verificación
+
+scripts/check-all.sh ejecuta las comprobaciones automáticas.
+
+scripts/smoke-events.mjs requiere las variables temporales
+BACKSTAGE_SMOKE_ADMIN_TOKEN y BACKSTAGE_SMOKE_VIEWER_TOKEN.
+
+El smoke crea un evento ficticio y lo deja cancelado.
+Cada ejecución crea un nuevo evento de evidencia.
+
+La ruta /auth/access-token está deshabilitada por defecto.
+Para el smoke puede habilitarse temporalmente en desarrollo con
+AUTH0_ENABLE_ACCESS_TOKEN_ENDPOINT=true y reiniciando el frontend.
+Después debe deshabilitarse y reiniciarse nuevamente.
+En producción permanece deshabilitada.
+
+El procedimiento de cierre utiliza un reporte en .cache/verification.

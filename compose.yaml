@@ -29,6 +29,8 @@ services:
     environment:
       HOME: /tmp
       PORT: '3001'
+      AUTH0_DOMAIN: 'dev-2bg0falva5syaxx7.us.auth0.com'
+      AUTH0_AUDIENCE: 'https://backstage.local/api'
       PGHOST: db
       PGPORT: '5432'
       DB_APP_PASSWORD: '${DB_APP_PASSWORD:?Falta DB_APP_PASSWORD}'
