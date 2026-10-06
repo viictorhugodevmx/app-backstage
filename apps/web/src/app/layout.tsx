@@ -1,16 +1,22 @@
 import type { Metadata } from 'next';
-import type { ReactNode } from 'react';
+import { AppShell } from '@/components/app-shell';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Backstage',
-  description: 'Plataforma para coordinar la producción de eventos.',
+  title: {
+    default: 'Backstage — Producción de eventos',
+    template: '%s | Backstage',
+  },
+  description:
+    'Tu espacio para organizar conciertos, coordinar la producción y preparar cada evento.',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

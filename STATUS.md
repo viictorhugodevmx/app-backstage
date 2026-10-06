@@ -121,3 +121,15 @@ Contrato y mapa de puntos registrados en docs/steps/paso-02.md.
 - Smoke real de Auth0 y permisos aprobado.
 - Endpoint de tokens del navegador deshabilitado.
 - Pendiente: revisión del reporte y VOBO del usuario.
+
+## Paso 3 — VOBO recibido
+
+- Autenticación y autorización cerradas por el usuario.
+- 75 pruebas y smoke real aprobados.
+- Endpoint de tokens del navegador deshabilitado.
+- Commit de implementación: ae2b80f.
+
+## Paso 4 — Frontend de eventos
+
+- Inicio de identidad visual, navegación y pantallas funcionales.
+- Plan detallado en docs/steps/paso-04.md.
